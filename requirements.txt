@@ -1,0 +1,6 @@
+wxauto==3.9.8.15.7
+keyboard==0.13.5
+sqlite-utils==3.35
+pandas==2.0.3
+openpyxl==3.1.2
+pywin32==306 
