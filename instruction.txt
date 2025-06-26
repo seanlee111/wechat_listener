@@ -1,0 +1,2 @@
+cd version2.0
+.\venv\Scripts\activate; python src/wechat_listener.py
