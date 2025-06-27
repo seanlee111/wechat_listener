@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Dict, Any
 
 # 添加src目录到路径
-sys.path.append('src')
+sys.path.append('../src')
 
 from config_loader import ConfigLoader, AppConfigFromFile
 from wechat_listener_advanced import WeChatListenerAdvanced, ListenerConfig
@@ -19,7 +19,7 @@ from workflow_manager import WorkflowConfig
 from database_v2 import DatabaseV2
 
 # 确保日志目录存在
-log_dir = Path('logs')
+log_dir = Path('../logs')
 log_dir.mkdir(parents=True, exist_ok=True)
 
 # 配置日志格式
@@ -28,7 +28,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(),
-        logging.FileHandler('logs/listener_startup.log', encoding='utf-8')
+        logging.FileHandler('../logs/listener_startup.log', encoding='utf-8')
     ]
 )
 
@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 class ConfigurableListener:
     """配置化监听器启动器"""
     
-    def __init__(self, config_file: str = "config/listener_config.json"):
+    def __init__(self, config_file: str = "../config/listener_config.json"):
         """初始化配置化监听器"""
         self.config_file = config_file
         self.app_config = None
@@ -210,8 +210,8 @@ def main():
     parser = argparse.ArgumentParser(description="配置化高级微信监听器")
     parser.add_argument(
         '-c', '--config', 
-        default='config/listener_config.json',
-        help='配置文件路径 (默认: config/listener_config.json)'
+        default='../config/listener_config.json',
+        help='配置文件路径 (默认: ../config/listener_config.json)'
     )
     parser.add_argument(
         '--create-template',

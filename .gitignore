@@ -29,6 +29,11 @@ ENV/
 data/*.db
 data/*.sqlite
 data/*.sqlite3
+data/*.db-shm
+data/*.db-wal
+
+# Backup files
+backups/
 
 # Logs
 wxauto_logs/
@@ -50,4 +55,7 @@ Thumbs.db
 
 # Temporary files
 *.tmp
-*.temp 
+*.temp
+
+# Deployment packages (生成的部署包)
+deployment_packages/ 

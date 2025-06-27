@@ -1,4 +1,5 @@
 from database import setup_database
+from wxauto import WeChat
 
 if __name__ == "__main__":
     print("--- 开始初始化/更新数据库结构 ---")

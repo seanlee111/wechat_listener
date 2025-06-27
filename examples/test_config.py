@@ -8,11 +8,11 @@ import sys
 from pathlib import Path
 
 # 添加src目录到路径
-sys.path.append('src')
+sys.path.append('../src')
 
 from config_loader import ConfigLoader
 
-def test_config(config_file: str = "config/listener_config.json"):
+def test_config(config_file: str = "../config/listener_config.json"):
     """测试配置文件"""
     try:
         print("[INFO] 测试配置文件系统")
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="测试配置文件")
     parser.add_argument(
         '-c', '--config', 
-        default='config/listener_config.json',
+        default='../config/listener_config.json',
         help='配置文件路径'
     )
     

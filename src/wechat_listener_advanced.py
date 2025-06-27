@@ -80,6 +80,9 @@ class WeChatListenerAdvanced:
         self.message_buffer = []
         self.last_workflow_run = None
         
+        # 简单去重：记录最近处理的消息
+        self.processed_messages = set()  # 存储 (group_name, sender, content) 的哈希
+        
         logger.info(f"高级微信监听器初始化完成，会话ID: {self.session_stats.session_id}")
         logger.info(f"目标群聊: {self.config.target_groups}")
         logger.info(f"自动工作流: {self.config.auto_workflow_enabled}")
@@ -283,39 +286,46 @@ class WeChatListenerAdvanced:
         """从单个群聊收集消息"""
         try:
             # 切换到目标群聊
-            chat = self.wx.ChatWith(group_name)
-            if not chat:
-                logger.warning(f"无法找到群聊: {group_name}")
-                return []
+            self.wx.ChatWith(group_name)
             
-            # 获取最近的消息
-            messages = chat.GetAllMessage()
+            # 获取最近的消息（直接从wx实例获取）
+            messages = self.wx.GetAllMessage()
             if not messages:
                 return []
             
             # 获取数据库中该群最后一条消息的时间戳
             last_timestamp = self._get_last_message_timestamp(group_name)
             
-            # 过滤新消息
+            # 过滤新消息（简化处理，使用当前时间）
             new_messages = []
             for msg in messages:
                 try:
-                    # 解析消息时间
-                    msg_time = self._parse_message_time(msg.time)
+                    # 获取消息基本信息
+                    sender = msg.sender if hasattr(msg, 'sender') else "Unknown"
+                    content = msg.content if hasattr(msg, 'content') else str(msg)
                     
-                    # 只处理新消息
-                    if last_timestamp is None or msg_time > last_timestamp:
-                        message_data = {
-                            "group_name": group_name,
-                            "sender": msg.sender if hasattr(msg, 'sender') else "Unknown",
-                            "content": msg.content if hasattr(msg, 'content') else str(msg),
-                            "msg_type": "text",  # 简化处理
-                            "timestamp": msg_time.isoformat(),
-                            "session_id": self.session_stats.session_id,
-                            "collected_at": datetime.now().isoformat()
-                        }
-                        new_messages.append(message_data)
-                        
+                    # 简单去重：基于群聊、发送者、内容生成唯一标识
+                    message_key = (group_name, sender, content)
+                    if message_key in self.processed_messages:
+                        continue  # 跳过已处理的消息
+                    
+                    # 标记为已处理
+                    self.processed_messages.add(message_key)
+                    
+                    # 简化处理：使用当前时间作为消息时间
+                    current_time = datetime.now()
+                    
+                    message_data = {
+                        "group_name": group_name,
+                        "sender": sender,
+                        "content": content,
+                        "msg_type": "text",  # 简化处理
+                        "timestamp": current_time.isoformat(),
+                        "session_id": self.session_stats.session_id,
+                        "collected_at": current_time.isoformat()
+                    }
+                    new_messages.append(message_data)
+                    
                 except Exception as e:
                     logger.error(f"解析消息时出错: {e}")
                     continue
@@ -387,12 +397,11 @@ class WeChatListenerAdvanced:
             saved_count = 0
             for message in self.message_buffer:
                 try:
-                    self.db_v2.save_message(
+                    self.db_v2.save_raw_message(
                         group_name=message["group_name"],
                         sender=message["sender"],
                         content=message["content"],
-                        msg_type=message["msg_type"],
-                        timestamp=message["timestamp"]
+                        msg_type=message["msg_type"]
                     )
                     saved_count += 1
                 except Exception as e:
@@ -403,6 +412,11 @@ class WeChatListenerAdvanced:
             
             # 清空缓冲区
             self.message_buffer.clear()
+            
+            # 定期清理已处理消息记录（防止内存无限增长）
+            if len(self.processed_messages) > 1000:
+                self.processed_messages.clear()
+                logger.info("已清理消息去重记录")
             
         except Exception as e:
             logger.error(f"保存缓冲消息时出错: {e}")
@@ -593,7 +607,8 @@ if __name__ == "__main__":
     print("=== 微信监听器高级版测试 ===")
     
     # 配置目标群聊（需要根据实际情况修改）
-    target_groups = ["测试群1", "测试群2"]
+    target_groups = ["NFC金融实习分享群（一）",
+      "NJU后浪-优质实习交流群"]
     
     try:
         success = start_advanced_listener(

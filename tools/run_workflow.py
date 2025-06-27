@@ -35,7 +35,7 @@ def main_workflow():
     1. 运行微信监听脚本。
     2. 监听结束后，运行数据库去重脚本。
     """
-    base_dir = Path(__file__).resolve().parent
+    base_dir = Path(__file__).resolve().parent.parent  # 上级目录
     src_dir = base_dir / "src"
     
     listener_script = src_dir / "wechat_listener.py"

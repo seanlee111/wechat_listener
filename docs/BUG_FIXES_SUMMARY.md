@@ -85,7 +85,7 @@ AttributeError: 'BackupManager' object has no attribute 'get_backup_statistics'
 ```
 
 ### 根本原因
-`demo_phase3.py`调用了`BackupManager.get_backup_statistics()`方法，但该方法未实现。
+`examples/demo_phase3.py`调用了`BackupManager.get_backup_statistics()`方法，但该方法未实现。
 
 ### 解决方案
 在`BackupManager`类中添加`get_backup_statistics`方法：
@@ -188,7 +188,7 @@ python start_listener_with_config.py
 ### 可选使用
 ```bash
 # 完整演示（如果需要详细信息）
-python demo_phase3.py
+python examples/demo_phase3.py
 
 # 传统启动方式
 python run_workflow.py
