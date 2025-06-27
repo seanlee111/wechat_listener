@@ -1,0 +1,47 @@
+{
+  "listener": {
+    "target_groups": [
+      "NFC金融实习分享群（一）",
+      "NJU后浪-优质实习交流群"
+    ],
+    "check_interval_seconds": 10,
+    "workflow_check_interval_minutes": 30,
+    "auto_workflow_enabled": true,
+    "max_session_duration_hours": 12,
+    "enable_realtime_monitoring": true,
+    "monitoring_port": 8080
+  },
+  "workflow": {
+    "auto_dedup_enabled": true,
+    "dedup_threshold": 50,
+    "auto_backup_enabled": true,
+    "validation_enabled": true,
+    "max_dedup_failures": 3,
+    "dedup_interval_minutes": 30,
+    "health_check_interval_minutes": 60
+  },
+  "database": {
+    "db_path": "data/wechat_jds.db",
+    "backup_path": "backups/",
+    "max_backup_files": 30,
+    "auto_cleanup_enabled": true
+  },
+  "logging": {
+    "level": "INFO",
+    "file_enabled": true,
+    "console_enabled": true,
+    "max_log_files": 7,
+    "log_file_path": "logs/wechat_listener.log"
+  },
+  "security": {
+    "enable_data_encryption": false,
+    "backup_compression": true,
+    "data_retention_days": 365
+  },
+  "performance": {
+    "message_buffer_size": 20,
+    "batch_processing_size": 500,
+    "max_memory_usage_mb": 512,
+    "enable_performance_monitoring": true
+  }
+}
