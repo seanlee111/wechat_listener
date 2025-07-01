@@ -1,13 +1,10 @@
 """
-AI模块
-微信群聊智能监听与JD信息提取AI模块
-
-主要功能:
-- 基于大模型的JD信息智能识别与结构化提取
-- 多提供商支持 (OpenAI, Claude, 通义千问)
-- 完整的质量控制和验证系统
-- 企业级监控和告警系统
+AI模块 - 人工智能功能模块
+基于Core模块的数据库内容，提供AI增强功能
 """
+
+from .jd_extractor import JDExtractor
+from .message_analyzer import MessageAnalyzer
 
 __version__ = "1.0.0"
 __author__ = "AI Team"
@@ -45,5 +42,15 @@ __all__ = [
     # 枚举类型
     "WorkType",
     "WorkMode", 
-    "EducationLevel"
-] 
+    "EducationLevel",
+
+    "JDExtractor",
+    "MessageAnalyzer"
+]
+
+# AI模块依赖core模块的数据库
+try:
+    from ..core_module import CoreListener
+    print("AI模块成功加载Core模块依赖")
+except ImportError:
+    print("警告：未找到Core模块，AI模块功能可能受限") 
