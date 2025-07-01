@@ -1,0 +1,38 @@
+{
+    "data_pipeline": {
+        "batch_size": 20,
+        "jd_detection_threshold": 0.4,
+        "min_content_length": 30
+    },
+    "llm_extractor": {
+        "provider": "volcano",
+        "api_config": {
+            "volcano": {
+                "api_key": "61d9c899-c2eb-44b6-b8bf-7c260482a1cd",
+                "endpoint": "ep-20250701172601-hjn5s",
+                "timeout": 60
+            },
+            "qwen": {
+                "api_key": "",
+                "model_name": "qwen-max"
+            }
+        },
+        "max_retries": 2,
+        "parallel_extraction": false
+    },
+    "result_processor": {
+        "min_confidence_threshold": 0.3,
+        "required_fields": [
+            "company_name"
+        ],
+        "quality_score_threshold": 0.3
+    },
+    "system": {
+        "debug_mode": false,
+        "log_level": "INFO",
+        "save_extraction_history": true
+    },
+    "custom": {
+        "test_value": null
+    }
+}
